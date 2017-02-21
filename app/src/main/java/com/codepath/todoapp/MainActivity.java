@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+    private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,23 @@ public class MainActivity extends AppCompatActivity {
                                                intent.putExtra("a",itemsAdapter.getItem(position));
                                                intent.putExtras(bundle);
                                                startActivity(intent);
+                                               onActivityResult(REQUEST_CODE,RESULT_OK,intent);
                                            }
                                        });
+    }
+
+    //handle edit item changes
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            String name = data.getExtras().getString("a");
+            int code = data.getExtras().getInt("code", 0);
+            // Toast the name to display temporarily on screen
+            writeItems();
+            Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void readItems() {

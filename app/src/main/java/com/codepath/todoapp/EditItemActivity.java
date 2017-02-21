@@ -16,10 +16,15 @@ public class EditItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
 
-      //  String param1 = getIntent().getStringExtra("a");
+        String param1 = getIntent().getStringExtra("a");
+        EditText etEditItem = (EditText) findViewById(R.id.editText);
+        etEditItem.setText(param1);
+        //set cursor at the end
+        int textLength = etEditItem.getText().length();
+        etEditItem.setSelection(textLength, textLength);
 
         addListenerOnButton();
-        //onSubmit();
+
     }
 
 
@@ -31,12 +36,20 @@ public class EditItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String param1 = getIntent().getStringExtra("a");
                 EditText etEditItem = (EditText) findViewById(R.id.editText);
-                etEditItem.setText(param1);
+
 
                 Intent intent = new Intent(context,MainActivity.class);
                 Bundle bundle = getIntent().getExtras();
-
+                etEditItem.setText("");
                 startActivityForResult(intent,20);
+
+                // Pass relevant data back as a result
+                intent.putExtra("a", etEditItem.getText().toString());
+                intent.putExtra("code", 200); // ints work too
+                // Activity finished ok, return the data
+                setResult(RESULT_OK, intent); // set result code and bundle data for response
+                finish(); // closes the activity, pass data to parent
+
 
             }
         });
