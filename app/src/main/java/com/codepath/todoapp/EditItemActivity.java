@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 public class EditItemActivity extends AppCompatActivity {
 
+   // MainActivity _main = new MainActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +36,23 @@ public class EditItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String param1 = getIntent().getStringExtra("a");
+                int position = getIntent().getIntExtra("position",-1);
                 EditText etEditItem = (EditText) findViewById(R.id.editText);
 
 
                 Intent intent = new Intent(context,MainActivity.class);
-                Bundle bundle = getIntent().getExtras();
-                etEditItem.setText("");
-                startActivityForResult(intent,20);
 
+                String newParam = etEditItem.getText().toString();
                 // Pass relevant data back as a result
-                intent.putExtra("a", etEditItem.getText().toString());
-                intent.putExtra("code", 200); // ints work too
+                intent.putExtra("a", newParam);
+                intent.putExtra("code", 200);
+
+                intent.putExtra("position",position);
+              //  _main.writeItems();
                 // Activity finished ok, return the data
                 setResult(RESULT_OK, intent); // set result code and bundle data for response
-                finish(); // closes the activity, pass data to parent
 
-
+                finish();
             }
         });
     }

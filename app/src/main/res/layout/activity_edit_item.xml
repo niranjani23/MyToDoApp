@@ -41,5 +41,6 @@
         android:layout_alignLeft="@+id/editText"
         android:layout_alignStart="@+id/editText"
         android:layout_marginTop="31dp"
-        android:id="@+id/button" />
+        android:id="@+id/button"
+        android:onClick="addListenerOnButton" />
 </RelativeLayout>

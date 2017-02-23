@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
-    private final int REQUEST_CODE = 20;
+    public static final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
         readItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
-        items.add("First item");
-        items.add("Second item");
+//        items.add("First item");
+//        items.add("Second item");
         setupListViewListener();
         editItemListener();
     }
@@ -70,13 +71,11 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                            @Override
                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                               String item = itemsAdapter.getItem(position);
                                                Intent intent = new Intent(context,EditItemActivity.class);
-                                               Bundle bundle = new Bundle();
-                                              // bundle.putString("a","First item");
                                                intent.putExtra("a",itemsAdapter.getItem(position));
-                                               intent.putExtras(bundle);
-                                               startActivity(intent);
-                                               onActivityResult(REQUEST_CODE,RESULT_OK,intent);
+                                               intent.putExtra("position",itemsAdapter.getPosition(item));
+                                               startActivityForResult(intent, REQUEST_CODE);
                                            }
                                        });
     }
@@ -84,18 +83,22 @@ public class MainActivity extends AppCompatActivity {
     //handle edit item changes
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("Blah", "This happened");
         // REQUEST_CODE is defined above
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
             String name = data.getExtras().getString("a");
-            int code = data.getExtras().getInt("code", 0);
-            // Toast the name to display temporarily on screen
-            writeItems();
+            int position = data.getExtras().getInt("position");
+
+            items.set(position, name);
+            itemsAdapter.notifyDataSetChanged();
+
             Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void readItems() {
+
+    public void readItems() {
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir,"todo.txt");
         try {
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void writeItems() {
+    public void writeItems() {
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir,"todo.txt");
         try {
